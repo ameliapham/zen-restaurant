@@ -6,6 +6,9 @@ import { DesignOfHomePage } from "./DesignOfHomePage"
 import backgroundImageUrl from "assets/food-pho.webp"
 import { useHeight } from "hooks/useHeightContext"
 import { useDomRect } from "powerhooks/useDomRect"
+import { useAsync } from "tools/useAsync";
+import { getHomepage } from "data/homepageData";
+//import { getCats } from "data/cat";
 
 
 export function Home() {
@@ -26,6 +29,20 @@ export function Home() {
         setChecked(true)
     }, [])
 
+    const homepage = useAsync(getHomepage);
+    //const cats = useAsync(getCats);
+
+    /*
+    if(cats === undefined){
+        return null;
+    }
+    */
+
+    if(homepage === undefined){
+        //return <h1>Loading API data ...</h1>;
+        return null;
+    }
+
     return (
         <Fade
             in={checked}
@@ -36,11 +53,16 @@ export function Home() {
                     ref={ref}
                     className={classes.left}
                     backgroundImageUrl={backgroundImageUrl}
-                    heroText={<>Zen <br /> Gourmet</>}
+                    heroText={
+                        <span 
+                            dangerouslySetInnerHTML={{__html: homepage.title}}
+                        />
+                    }
                 />
                 <DesignOfHomePage
                     className={classes.right}
                 />
+                {cats.map(cat => (<div key={cat.id}>{cat.name}</div>))}
             </div>
         </Fade>
     )

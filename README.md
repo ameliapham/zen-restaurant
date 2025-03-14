@@ -1,5 +1,19 @@
 # Restaurant ZenAsia
 
+```bash
+git clone https://github.com/ameliapham/zen-restaurant
+cd zen-restaurant
+yarn
+```
+To start the Fronted:
+```bash
+yarn dev
+```
+To start the Backend:
+```bash
+yarn manifest
+```
+
 **Restaurant ZenAsia** is a modern template I created for an Asian restaurant. Developed with **React** and **TypeScript**, this template combines cutting-edge web technologies with AI-generated visuals to offer a unique and visually captivating experience.
 
 <br/>
