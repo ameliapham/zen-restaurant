@@ -1,4 +1,4 @@
-name: My pet app 🐾
+name: My resto app 🐾
 entities:
   Owner:
     properties:
@@ -15,8 +15,28 @@ entities:
 
   Homepage:
     nameSingular: Home content
+    # This entity has only one data entry
+    # and it is not a collection
+    # so we set the `single` property to true
     single: true
     properties:
       - title
       - { name: description, type: richText }
       - { name: cover, type: image }
+
+  DishCategory:
+    nameSingular: Dish category
+    namePlural: Dish categories
+    properties:
+      - { name: title, type: string }
+
+  Dish :
+    nameSingular: Dish
+    namePlural: Dishes
+    properties:
+      - { name: title, type: string }
+      - { name: description, type: richText }
+      - { name: price, type: number } 
+      - { name: illustration, type: image }
+    belongsTo:
+      - DishCategory
