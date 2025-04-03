@@ -1,5 +1,6 @@
 import { API_URL } from "./API_URL";
 
+
 export type Dish = {
   id: number;
   title: string;
@@ -11,9 +12,6 @@ export type Dish = {
   } | null;
   dishCategory: {
     id: number;
-    title: string;
-    description: string;
-    cover: null;
   };
 };
 
@@ -25,7 +23,7 @@ export async function getDishes(): Promise<Dish[]> {
   /*
     "{ data: [{}, {}, {}], page: 1, total: 0, perPage: 100 }" <- you have
     "[{}, {}, {}]" <- you wish
-    */
+  */
 
   const body_obj = JSON.parse(body_str) as { data: Dish[] };
 
