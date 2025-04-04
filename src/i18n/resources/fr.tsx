@@ -47,11 +47,5 @@ export const translations: Translations<"fr"> = {
     "Menu": {
         "menu": "La Carte",
     },
-    "DesignOfMenuPage": {
-        "starters": "Entrées",
-        "mains": "Plats principaux",
-        "desserts": "Desserts",
-        "drinks": "Boissons",
-    },
     /* spell-checker: enable */
 };

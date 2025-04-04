@@ -46,10 +46,4 @@ export const translations: Translations<"en"> = {
     "Menu": {
         "menu": "Menu",
     },
-    "DesignOfMenuPage": {
-        "starters": "Starters",
-        "mains": "Mains",
-        "desserts": "Desserts",
-        "drinks": "Drinks",
-    },
 };
