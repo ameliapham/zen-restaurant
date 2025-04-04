@@ -1,37 +1,39 @@
-import { starters, desserts, mains, drinks } from '../../data/ListOfDishes';
 import Divider from '@mui/material/Divider';
 import { FoodItemStructure } from './FoodItemStructure'
 import { tss } from 'tss'
 import Typography from '@mui/material/Typography'
+import { useAsync } from 'tools/useAsync';
+import { getDishes } from 'data/dish';
 
 type PropsMenuStructure = {
     className?: string;
     heading: string;
-    foods: "starters" | "desserts" | "mains" | "drinks";
+    dishCategoryId: number;
 }
 
 export function MenuStructure(props: PropsMenuStructure) {
 
-    const { foods, heading } = props
+    const { className, heading, dishCategoryId } = props
 
-    const { classes } = useStyles()
+    console.log("dishCategoryId", dishCategoryId)
 
-    const foodData = (() => {
-        switch (foods) {
-            case "starters":
-                return starters;
-            case "desserts":
-                return desserts;
-            case "mains":
-                return mains;
-            case "drinks":
-                return drinks;
-        }
-    })();
+    const { classes, cx } = useStyles()
+
+    const dishes = useAsync(getDishes);
+
+    console.log("dishes", dishes)
+
+    if( dishes === undefined ) {
+        return <div>Loading...</div>
+    }
+
+    const dishes_selected = dishes.filter(dish => dish.dishCategory.id === dishCategoryId);
+
+    console.log("dishes_selected", dishes_selected)
 
     return (
 
-        <div className={classes.root}>
+        <div className={cx(classes.root, className)}>
 
             <div className={classes.objectHeading}>
                 <Divider
@@ -51,8 +53,7 @@ export function MenuStructure(props: PropsMenuStructure) {
 
             </div>
             <div className={classes.foodList}>
-                <FoodItemStructure foods={foodData}>
-                </FoodItemStructure>
+                <FoodItemStructure dishes={dishes_selected} />
             </div>
 
 

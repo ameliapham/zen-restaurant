@@ -1,16 +1,16 @@
 import { tss } from 'tss-react/mui'
-import { ListOfDishes } from "../../data/ListOfDishes"
 import Typography from '@mui/material/Typography'
 import { useResolveLocalizedString } from "i18n";
+import { Dish } from 'data/dish';
 
 type PropsFoodItemStructure = {
     className?: string;
-    foods: ListOfDishes[];
+    dishes: Dish[];
 }
 
 export function FoodItemStructure(props: PropsFoodItemStructure) {
 
-    const { className, foods } = props
+    const { className, dishes } = props
 
     const { cx, classes } = useStyles()
 
@@ -20,11 +20,11 @@ export function FoodItemStructure(props: PropsFoodItemStructure) {
 
     return (
         <div>
-            {foods.map((foods, i) => (
+            {dishes.map((dishes, i) => (
                 <div key={i} className={cx(classes.root, className)}>
                     <div
                         className={classes.illustration}
-                        style={{ backgroundImage: `url(${foods.illustration})` }}
+                        style={{ backgroundImage: `url(${dishes.illustration})` }}
                     ></div>
 
                     <div className={classes.textZone}>
@@ -32,22 +32,22 @@ export function FoodItemStructure(props: PropsFoodItemStructure) {
                             <Typography
                                 variant='body1'
                             >
-                                {resolveLocalizedString(foods.nameOfDish)}
+                                {resolveLocalizedString(dishes.title)}
                             </Typography>
 
                             <Typography
                                 variant='body1'
                             >
-                                {foods.price}
+                                {dishes.price}
                             </Typography>
                         </div>
 
-                        {foods.details !== undefined &&
+                        {dishes.description !== undefined &&
                             <Typography
                                 variant='caption'
                                 className={classes.details}
                             >
-                                {resolveLocalizedString(foods.details)}
+                                {resolveLocalizedString(dishes.description)}
                             </Typography>
                         }
                     </div>

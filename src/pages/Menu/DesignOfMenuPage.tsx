@@ -1,122 +1,103 @@
-import { tss } from 'tss-react/mui'
-import { MenuStructure } from './MenuStructure'
-import { useState } from 'react'
-import { Divider } from '@mui/material'
-import { HashtagButton } from './HashtagButton'
-import { declareComponentKeys } from "i18nifty"
-import { useTranslation } from "i18n"
+import { useEffect } from "react";
+import { tss } from "tss-react/mui";
+import { MenuStructure } from "./MenuStructure";
+import { useState } from "react";
+import { Divider } from "@mui/material";
+import { HashtagButton } from "./HashtagButton";
+import { getDishCategories } from "data/dishCategory";
+import { useAsync } from "tools/useAsync";
 
 type PropsDesignOfMenuPage = {
-    className?: string;
-}
-
-type FoodCategory = "starters" | "mains" | "desserts" | "drinks"
+  className?: string;
+};
 
 export function DesignOfMenuPage(props: PropsDesignOfMenuPage) {
+  const { className } = props;
+  const { cx, classes } = useStyles({ selected: false });
+  const [dishCategoryId_selected, setDishCategoryId_selected] = useState<
+    number | undefined
+  >(undefined);
 
+  const dishCategories = useAsync(getDishCategories);
 
-    const { className } = props
-    const { cx, classes } = useStyles({ selected: false })
-    const [selectedCategory, setSelectedCategory] = useState<FoodCategory>("starters")
-    const { t } = useTranslation({ DesignOfMenuPage })
+  useEffect(
+    ()=> {
 
-    return (
-        <div className={cx(classes.root, className)}>
-            <div className={classes.hashtag}>
-                <HashtagButton
-                    onClick={() => setSelectedCategory("starters")}
-                    selected={selectedCategory === "starters"}
-                >
-                    {t("starters")}
-                </HashtagButton>
+        if( dishCategories === undefined ){
+            return;
+        }
 
-                <Divider
-                    orientation="vertical"
-                    variant="middle"
-                    flexItem
-                    className={classes.divider}
-                />
+        if( dishCategoryId_selected !== undefined ){
+            return;
+        }
 
-                <HashtagButton
-                    onClick={() => setSelectedCategory("mains")}
-                    selected={selectedCategory === "mains"}
-                >
-                    {t("mains")}
-                </HashtagButton>
+        setDishCategoryId_selected(dishCategories[0].id);
 
+    },
+    [dishCategories]
+  );
 
-                <Divider
-                    orientation="vertical"
-                    variant="middle"
-                    flexItem
-                    className={classes.divider}
-                />
+  if (dishCategories === undefined || dishCategoryId_selected === undefined) {
+    return <div>Loading...</div>;
+  }
 
-                <HashtagButton
-                    onClick={() => setSelectedCategory("desserts")}
-                    selected={selectedCategory === "desserts"}
-                >
-                    {t("desserts")}
-                </HashtagButton>
+  return (
+    <div className={cx(classes.root, className)}>
+      <div className={classes.hashtag}>
+        {dishCategories.map((category) => {
+          return (
+            <>
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                flexItem
+                className={classes.divider}
+              />
+              <HashtagButton
+                onClick={() => setDishCategoryId_selected(category.id)}
+                selected={category.id === dishCategoryId_selected}
+              >
+                {category.title}
+              </HashtagButton>
+            </>
+          );
+        })}
+      </div>
 
-
-                <Divider
-                    orientation="vertical"
-                    variant="middle"
-                    flexItem
-                    className={classes.divider}
-                />
-
-                <HashtagButton
-                    onClick={() => setSelectedCategory("drinks")}
-                    selected={selectedCategory === "drinks"}
-                >
-                    {t("drinks")}
-                </HashtagButton>
-            </div>
-
-            <MenuStructure
-                heading={selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
-                foods={selectedCategory}
-            ></MenuStructure>
-
-        </div>
-
-    )
+      <MenuStructure
+        heading={dishCategories.find((category) => category.id === dishCategoryId_selected)!.title}
+        dishCategoryId={dishCategoryId_selected}
+      ></MenuStructure>
+    </div>
+  );
 }
 
 const useStyles = tss
-    .withName({ DesignOfMenuPage })
-    .withParams<{ selected: boolean }>()
-    .create(({ theme }) => ({
-        "root": {
-            "display": "flex",
-            "flexDirection": "column",
-            "boxSizing": "border-box",
-            "gap": theme.spacing(5),
-            "borderRadius": theme.spacing(2),
-            "padding": `${theme.spacing(2)}`,
-            "border": `1px solid ${theme.palette.secondary.light}`,
-            "overflow": "hidden",
-            "height": "100%",
+  .withName({ DesignOfMenuPage })
+  .withParams<{ selected: boolean }>()
+  .create(({ theme }) => ({
+    root: {
+      display: "flex",
+      flexDirection: "column",
+      boxSizing: "border-box",
+      gap: theme.spacing(5),
+      borderRadius: theme.spacing(2),
+      padding: `${theme.spacing(2)}`,
+      border: `1px solid ${theme.palette.secondary.light}`,
+      overflow: "hidden",
+      height: "100%",
 
-            [theme.breakpoints.down('desktop')]: {
-                "marginTop": `${theme.spacing(2)}`,
-            },
-        },
-        "hashtag": {
-            "display": "flex",
-            "flexWrap": "wrap",
-            "justifyContent": "center",
-        },
-        "divider": {
-            "background": theme.palette.secondary.light,
-        }
-    }))
+      [theme.breakpoints.down("desktop")]: {
+        marginTop: `${theme.spacing(2)}`,
+      },
+    },
+    hashtag: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+    },
+    divider: {
+      background: theme.palette.secondary.light,
+    },
+  }));
 
-export const { i18n } = declareComponentKeys<
-| "starters"
-| "mains"
-| "desserts"
-| "drinks"
->()({ DesignOfMenuPage });
