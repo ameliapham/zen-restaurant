@@ -74,7 +74,7 @@ export function DesignOfAboutPage(props: PropsDesignOfAboutPage) {
                             lng: 2.3446,
                         }}
                     />
-
+ 
                     <Typography
                         variant='body2'
                     >
