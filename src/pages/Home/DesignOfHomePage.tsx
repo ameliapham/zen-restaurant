@@ -6,6 +6,8 @@ import thirdImage from "assets/resto4.webp"
 import { declareComponentKeys } from "i18nifty"
 import { useTranslation } from "i18n"
 import { useSelectedPage } from 'hooks/useSelectedPage';
+import { keyframes } from "tss-react";
+
 
 type PropsDesignOfHomePage = {
     className?: string;
@@ -47,6 +49,20 @@ export function DesignOfHomePage(props: PropsDesignOfHomePage) {
     )
 }
 
+const animate = keyframes({
+    from: {
+        opacity: 0,
+        transform: "translate(200px, 0px)",
+        filter: "blur(2px)"
+    },
+    to: {
+        opacity: 1,
+        transform: "translate(0)",
+        filter: "blur(0)"
+    }
+});
+
+
 const useStyles = tss
     .withName({ DesignOfHomePage })
     .create(({ theme }) => ({
@@ -66,12 +82,13 @@ const useStyles = tss
         },
         "card": {
             "flex": 1,
+            opacity: 0,
+            animation: `${animate} 0.5s ease-in-out 0.2s 1 forwards`,
 
             [theme.breakpoints.only("mobile")]: {
                 "flex": theme.spacing(40),
             },
-
-        }
+        },
     }))
 
 export const { i18n } = declareComponentKeys<
