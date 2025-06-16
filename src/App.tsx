@@ -1,31 +1,34 @@
-import { GlobalStyles } from 'tss-react';
-import { tss } from 'tss';
-import { useEffect, Suspense, lazy } from 'react';
+import { GlobalStyles } from "tss-react";
+import { tss } from "tss";
+import { useEffect, Suspense, lazy } from "react";
+import { useSelectedPage } from "hooks/useSelectedPage";
+import { SplashScreen } from "components/SplashScreen";
+import { useDelay } from "tools/useDelay";
 
-import { useSelectedPage } from 'hooks/useSelectedPage'
-
-const Home = lazy(() => import('pages/Home'))
-const Menu = lazy(() => import('pages/Menu'))
-const About = lazy(() => import('pages/About'))
-const Reservation = lazy(() => import('pages/Reservation'))
+const Home = lazy(() => import("pages/Home"));
+const Menu = lazy(() => import("pages/Menu"));
+const About = lazy(() => import("pages/About"));
+const Reservation = lazy(() => import("pages/Reservation"));
 
 export function App() {
-
-  const { selectedPage } = useSelectedPage()
-  const { classes, theme, scrollbarStyles } = useStyles()
+  const { selectedPage } = useSelectedPage();
+  const { classes, theme, scrollbarStyles } = useStyles();
+  const { isDelayed } = useDelay(5000);
 
   // This is for the theme color of the browser, it will take effect when the user is on mobile
   useEffect(() => {
-    const existingMeta = document.querySelector("meta[name='theme-color']")
+    const existingMeta = document.querySelector("meta[name='theme-color']");
     if (existingMeta !== null) {
-      existingMeta.remove()
+      existingMeta.remove();
     }
 
     const meta = document.createElement("meta");
     meta.name = "theme-color";
     meta.content = theme.palette.background.default;
     document.head.appendChild(meta);
-  }, [theme.palette.mode])
+  }, [theme.palette.mode]);
+
+  
 
   return (
     <>
@@ -35,45 +38,66 @@ export function App() {
             margin: 0,
             padding: 0,
           },
-          "html": {
-            "colorScheme": theme.palette.mode,
-            "backgroundColor": theme.palette.background.default,
+          html: {
+            colorScheme: theme.palette.mode,
+            backgroundColor: theme.palette.background.default,
           },
-          "body": {
+          body: {
             ...scrollbarStyles,
-          }
+          },
         }}
       />
       <div className={classes.root}>
-        <Suspense>
-          {(() => {
-            switch (selectedPage) {
-              case "home":
-                return <Home />
-              case "menu":
-                return <Menu />
-              case "about":
-                return <About />
-              case "reservation":
-                return <Reservation />
-            }
-          })()}
+        <Suspense
+          fallback={
+            <div className={classes.fallback}>
+              <SplashScreen className={classes.splashScreen} />
+            </div>
+          }
+        >
+          {isDelayed ? (
+            <div className={classes.fallback}>
+              <SplashScreen className={classes.splashScreen} />
+            </div>
+          ) : (
+            <div className={classes.root}>
+              {(() => {
+                switch (selectedPage) {
+                  case "home":
+                    return <Home />;
+                  case "menu":
+                    return <Menu />;
+                  case "about":
+                    return <About />;
+                  case "reservation":
+                    return <Reservation />;
+                }
+              })()}
+            </div>
+          )}
         </Suspense>
       </div>
     </>
-  )
+  );
 }
 
 const useStyles = tss.create(({ theme }) => ({
-  "root": {
-    "height": "100vh",
-    //"width": "100vw",
-    "overflow": "hidden",
-    "color": theme.palette.text.primary,
+  root: {
+    height: "100vh",
+    overflow: "hidden",
+    color: theme.palette.text.primary,
 
-    [theme.breakpoints.down('desktop')]: {
-      "overflow": "unset",
-      "height": "unset",
+    [theme.breakpoints.down("desktop")]: {
+      overflow: "unset",
+      height: "unset",
     },
   },
+  fallback: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme.palette.background.paper,
+  },
+  splashScreen: {},
 }));
