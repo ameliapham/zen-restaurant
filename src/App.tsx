@@ -13,7 +13,7 @@ const Reservation = lazy(() => import("pages/Reservation"));
 export function App() {
   const { selectedPage } = useSelectedPage();
   const { classes, theme, scrollbarStyles } = useStyles();
-  const { isDelayed } = useDelay(5000);
+  const { isDelayed } = useDelay(2000);
 
   // This is for the theme color of the browser, it will take effect when the user is on mobile
   useEffect(() => {
@@ -27,8 +27,6 @@ export function App() {
     meta.content = theme.palette.background.default;
     document.head.appendChild(meta);
   }, [theme.palette.mode]);
-
-  
 
   return (
     <>
