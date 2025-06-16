@@ -3,7 +3,6 @@ import { tss } from "tss";
 import { useEffect, Suspense, lazy } from "react";
 import { useSelectedPage } from "hooks/useSelectedPage";
 import { SplashScreen } from "components/SplashScreen";
-import { useDelay } from "tools/useDelay";
 
 const Home = lazy(() => import("pages/Home"));
 const Menu = lazy(() => import("pages/Menu"));
@@ -13,7 +12,6 @@ const Reservation = lazy(() => import("pages/Reservation"));
 export function App() {
   const { selectedPage } = useSelectedPage();
   const { classes, theme, scrollbarStyles } = useStyles();
-  const { isDelayed } = useDelay(2000);
 
   // This is for the theme color of the browser, it will take effect when the user is on mobile
   useEffect(() => {
@@ -49,30 +47,22 @@ export function App() {
         <Suspense
           fallback={
             <div className={classes.fallback}>
-              <SplashScreen className={classes.splashScreen} />
+              <SplashScreen />
             </div>
           }
         >
-          {isDelayed ? (
-            <div className={classes.fallback}>
-              <SplashScreen className={classes.splashScreen} />
-            </div>
-          ) : (
-            <div className={classes.root}>
-              {(() => {
-                switch (selectedPage) {
-                  case "home":
-                    return <Home />;
-                  case "menu":
-                    return <Menu />;
-                  case "about":
-                    return <About />;
-                  case "reservation":
-                    return <Reservation />;
-                }
-              })()}
-            </div>
-          )}
+          {(() => {
+            switch (selectedPage) {
+              case "home":
+                return <Home />;
+              case "menu":
+                return <Menu />;
+              case "about":
+                return <About />;
+              case "reservation":
+                return <Reservation />;
+            }
+          })()}
         </Suspense>
       </div>
     </>
@@ -97,5 +87,4 @@ const useStyles = tss.create(({ theme }) => ({
     alignItems: "center",
     backgroundColor: theme.palette.background.paper,
   },
-  splashScreen: {},
 }));
